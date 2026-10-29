@@ -14,13 +14,16 @@ import { CatalogPage } from '@/features/parts/pages/CatalogPage';
 import { UsersPage } from '@/features/users/pages/UsersPage';
 import { AuditLogPage } from '@/features/users/pages/AuditLogPage';
 import { AdminLayout } from './AdminLayout';
+import { NotFoundPage } from './NotFoundPage';
+import { RouteError } from './RouteError';
 
 export const router = createBrowserRouter([
-  { path: '/login', element: <LoginPage /> },
+  { path: '/login', element: <LoginPage />, errorElement: <RouteError /> },
 
   // Every other page needs a login with ROLE_ADMIN.
   {
     element: <RequireAdmin />,
+    errorElement: <RouteError />,
     children: [
       {
         element: <AdminLayout />,
@@ -39,7 +42,7 @@ export const router = createBrowserRouter([
           { path: '/catalog', element: <CatalogPage /> },
           { path: '/users', element: <UsersPage /> },
           { path: '/users/audit-log', element: <AuditLogPage /> },
-          { path: '*', element: <p>Page not found</p> },
+          { path: '*', element: <NotFoundPage /> },
         ],
       },
     ],
