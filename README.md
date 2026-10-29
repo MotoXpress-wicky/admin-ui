@@ -30,6 +30,7 @@ Not built yet: the Users page (lock, make admin, audit log). user-service has no
 ## Run and check
 
 ```bash
+cp .env.example .env    # first time only. The values are not secret.
 npm install
 npm run dev      # http://localhost:3001 (through Nginx: http://admin.localhost)
 npm run build    # checks the TypeScript types and builds
