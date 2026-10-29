@@ -1,12 +1,14 @@
 import { useCallback, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 import { Pager } from '@/shared/components/Pager';
 import { StatusBadge } from '@/shared/components/StatusBadge';
 import { COURIERS } from '@/shared/config';
 import { useFetch } from '@/shared/hooks/useFetch';
 import { formatDateTime, formatMoney } from '@/shared/lib/format';
 import { getErrorMessage } from '@/shared/lib/getErrorMessage';
+import type { ApiErrorBody } from '@/features/auth/types/auth.types';
 import { shipmentsApi } from '../api/shipmentsApi';
 import { NewShipmentForm } from '../components/NewShipmentForm';
 import {
@@ -30,6 +32,8 @@ export const ShipmentsPage = () => {
   const [reason, setReason] = useState<ReturnReason>('REFUSED');
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<{ title: string; outcome: BulkResult } | null>(null);
+  // The service checks every parcel first. If one is wrong, nothing changes and it lists every problem.
+  const [refused, setRefused] = useState<{ message: string; problems: string[] } | null>(null);
 
   const load = useCallback(
     () => shipmentsApi.list({ courier: courier || undefined, status: status || undefined, page }),
@@ -61,6 +65,7 @@ export const ShipmentsPage = () => {
   const runBulk = async (title: string, action: (ids: number[]) => Promise<BulkResult>) => {
     if (selected.size === 0) return;
     setBusy(true);
+    setRefused(null);
     try {
       const outcome = await action([...selected]);
       setResult({ title, outcome });
@@ -68,7 +73,11 @@ export const ShipmentsPage = () => {
       setSelected(new Set());
       shipments.reload();
     } catch (e) {
-      toast.error(getErrorMessage(e));
+      if (axios.isAxiosError<ApiErrorBody>(e) && e.response?.data?.details?.length) {
+        setRefused({ message: getErrorMessage(e), problems: e.response.data.details });
+      } else {
+        toast.error(getErrorMessage(e));
+      }
     } finally {
       setBusy(false);
     }
@@ -133,6 +142,22 @@ export const ShipmentsPage = () => {
           Mark returned
         </button>
       </div>
+
+      {refused && (
+        <section className="card" role="alert">
+          <h2 className="error">{refused.message}</h2>
+          <ul>
+            {refused.problems.map((p) => (
+              <li key={p} className="error">
+                {p}
+              </li>
+            ))}
+          </ul>
+          <button type="button" className="link-button" onClick={() => setRefused(null)}>
+            Close
+          </button>
+        </section>
+      )}
 
       {result && (
         <section className="card" role="status">
