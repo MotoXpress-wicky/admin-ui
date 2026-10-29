@@ -17,8 +17,9 @@ Hiding a page is not security: every service checks `ROLE_ADMIN` on every admin 
 | Courier receipts | `/courier-receipts`, `/new`, `/:id` | Tick the collected parcels, type what arrived, attach the receipt file | payment-service |
 | Parts | `/parts`, `/parts/new`, `/parts/:id` | Add, edit, hide, fitment, photos, stock changes and history | product-service |
 | Catalog | `/catalog` | Brands, models, categories (add, hide) | product-service |
+| Users | `/users`, `/users/audit-log` | Search, lock and unlock, make or remove admin, see the audit log | user-service |
 
-Not built yet: the Users page (lock, make admin, audit log). user-service has no admin endpoints yet.
+The first admin is created by user-service at start-up (`ADMIN_BOOTSTRAP_EMAIL` and `ADMIN_BOOTSTRAP_PASSWORD`).
 
 ## Settings (`.env`)
 

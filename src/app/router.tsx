@@ -11,6 +11,8 @@ import { ReceiptDetailPage } from '@/features/payments/pages/ReceiptDetailPage';
 import { PartsPage } from '@/features/parts/pages/PartsPage';
 import { PartFormPage } from '@/features/parts/pages/PartFormPage';
 import { CatalogPage } from '@/features/parts/pages/CatalogPage';
+import { UsersPage } from '@/features/users/pages/UsersPage';
+import { AuditLogPage } from '@/features/users/pages/AuditLogPage';
 import { AdminLayout } from './AdminLayout';
 
 export const router = createBrowserRouter([
@@ -35,6 +37,8 @@ export const router = createBrowserRouter([
           { path: '/parts/new', element: <PartFormPage /> },
           { path: '/parts/:id', element: <PartFormPage /> },
           { path: '/catalog', element: <CatalogPage /> },
+          { path: '/users', element: <UsersPage /> },
+          { path: '/users/audit-log', element: <AuditLogPage /> },
           { path: '*', element: <p>Page not found</p> },
         ],
       },

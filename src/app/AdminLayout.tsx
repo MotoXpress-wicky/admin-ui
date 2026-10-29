@@ -9,6 +9,7 @@ const LINKS = [
   { to: '/courier-receipts', text: 'Courier receipts' },
   { to: '/parts', text: 'Parts' },
   { to: '/catalog', text: 'Catalog' },
+  { to: '/users', text: 'Users' },
 ];
 
 export const AdminLayout = () => {
