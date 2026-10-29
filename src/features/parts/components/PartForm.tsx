@@ -115,7 +115,13 @@ export const PartForm = ({ part, onSaved }: Props) => {
           <label className="field-label" htmlFor="categoryId">
             Category
           </label>
-          <select id="categoryId" aria-invalid={!!errors.categoryId} {...register('categoryId')}>
+          {/* key: the options arrive after the form is built. A new select takes the saved value again. */}
+          <select
+            key={categories.data ? 'loaded' : 'loading'}
+            id="categoryId"
+            aria-invalid={!!errors.categoryId}
+            {...register('categoryId')}
+          >
             <option value="">Choose a category</option>
             {categories.data?.map((c) => (
               <option key={c.id} value={c.id}>
