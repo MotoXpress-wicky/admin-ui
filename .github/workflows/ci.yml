@@ -1,4 +1,4 @@
-# Checks every push and pull request: lint, TypeScript types and the production build (docs/mvp/13-ci-cd.md).
+# Checks every push and pull request: lint, unit tests, TypeScript types and the production build (docs/mvp/13-ci-cd.md).
 name: CI
 
 on:
@@ -18,5 +18,6 @@ jobs:
 
       - run: npm ci
       - run: npm run lint
+      - run: npm test
       # "build" runs tsc (types) and then vite build
       - run: npm run build
