@@ -13,6 +13,7 @@ import { formatMoney } from '@/shared/lib/format';
 import { getErrorMessage } from '@/shared/lib/getErrorMessage';
 import type { ApiErrorBody } from '@/features/auth/types/auth.types';
 import { paymentsApi } from '../api/paymentsApi';
+import { feesInCents, parseAmountToCents, sumInCents } from '../lib/receiptMath';
 
 const schema = z.object({
   receiptNo: z.string().trim().min(1, 'Receipt number is required').max(100, 'At most 100 characters'),
@@ -21,8 +22,6 @@ const schema = z.object({
   amountReceived: z.string().trim().regex(/^\d{1,10}(\.\d{1,2})?$/, 'Type an amount, for example 11950.00'),
 });
 type Values = z.infer<typeof schema>;
-
-const cents = (amount: number) => Math.round(amount * 100);
 
 // New courier receipt. The courier pays for a group of delivered parcels. The admin ticks those parcels,
 // types what arrived and attaches the courier's receipt. If anything is wrong, nothing is saved.
@@ -54,10 +53,10 @@ export const NewReceiptPage = () => {
   const payments = collected.data?.content ?? [];
 
   const chosen = payments.filter((p) => p.trackingNumber && selected.has(p.trackingNumber));
-  const collectedCents = chosen.reduce((sum, p) => sum + cents(p.amount), 0);
+  const collectedCents = sumInCents(chosen.map((p) => p.amount));
   const receivedText = useWatch({ control, name: 'amountReceived' });
-  const receivedCents = /^\d+(\.\d{1,2})?$/.test(receivedText ?? '') ? cents(Number(receivedText)) : null;
-  const feesCents = receivedCents === null ? null : collectedCents - receivedCents;
+  const receivedCents = parseAmountToCents(receivedText);
+  const feesCents = feesInCents(collectedCents, receivedCents);
 
   const toggle = (tracking: string) =>
     setSelected((old) => {
