@@ -28,6 +28,11 @@ The first admin is created by user-service at start-up (`ADMIN_BOOTSTRAP_EMAIL` 
 | `VITE_API_BASE_URL` | Address of the site that serves the API (Nginx admin site) |
 | `VITE_COURIERS` | Courier names in the forms, separated by commas. The services check them again. |
 
+## Tests
+
+`npm test` runs Vitest. It checks the money maths of the courier receipt (cents, fees, amount parsing) and the admin
+check (`isAdmin`). CI runs it on every push.
+
 ## Run and check
 
 ```bash
